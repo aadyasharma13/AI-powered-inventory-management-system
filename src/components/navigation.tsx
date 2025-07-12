@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/auth-context';
+import { ThemeToggle } from './ThemeToggle';
 
 export function Navigation() {
   const router = useRouter();
@@ -19,14 +20,15 @@ export function Navigation() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="text-xl font-bold">
-            Starter Kit
+            Team ASAP
           </Link>
-          
+
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             {user ? (
               <>
                 <Link href="/dashboard">
-                  <Button variant="ghost">Dashboard</Button>
+                  <Button variant="default">Dashboard</Button>
                 </Link>
                 <Link href="/profile">
                   <Button variant="ghost">Profile</Button>
@@ -38,7 +40,7 @@ export function Navigation() {
             ) : (
               <>
                 <Link href="/login">
-                  <Button variant="ghost">Sign In</Button>
+                  <Button variant="default">Sign In</Button>
                 </Link>
                 <Link href="/register">
                   <Button variant="outline">Sign Up</Button>

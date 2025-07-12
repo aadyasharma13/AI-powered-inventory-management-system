@@ -1,4 +1,4 @@
-import { ResetPasswordClient } from '@/components/reset-password-client';
+import { ResetPasswordClient } from '@/components/main/reset-password-client';
 
 export default function ResetPasswordPage() {
   return (

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "@/components/navigation";
 import { AuthProvider } from "@/contexts/auth-context";
+import { CacheProvider } from "@/contexts/cache-context";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Starter Kit - Next.js + Supabase + Drizzle",
-  description: "Modern starter kit with Next.js 15, Supabase, and Drizzle ORM",
+  title: "Team ASAP - AI powered Inventory Management System",
+  description: "AI powered Inventory Management System",
 };
 
 export default function RootLayout({
@@ -25,16 +27,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background`}
       >
-        <AuthProvider>
-          <Navigation />
-          <main className="container mx-auto px-4 py-8">
-            {children}
-          </main>
-        </AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <CacheProvider>
+              {children}
+            </CacheProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

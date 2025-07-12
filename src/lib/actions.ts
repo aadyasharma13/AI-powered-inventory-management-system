@@ -5,17 +5,18 @@ import { profiles } from '@/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { supabaseAdmin, supabase } from '@/lib/supabase';
+import { Profile } from './types';
 
 
 // Profile actions
-export async function getProfile(userId: string) {
+export async function getProfile(userId: string): Promise<{ data?: Profile; error?: string }> {
   try {    
     const profile = await db
       .select()
       .from(profiles)
       .where(eq(profiles.id, userId))
       .limit(1);    
-    return { data: profile[0] };
+    return { data: profile[0] as Profile };
   } catch (error) {
     console.error('Error fetching profile:', error);
     return { error: 'Failed to fetch profile' };

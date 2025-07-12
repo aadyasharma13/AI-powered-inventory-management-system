@@ -60,7 +60,7 @@ export function ResetPasswordClient() {
     return (
       <div className="text-center space-y-4">
         <div className="flex justify-center">
-          <CheckCircle className="w-16 h-16 text-green-500" />
+          <CheckCircle className="w-16 h-16" style={{ color: 'var(--color-green-600)' }} />
         </div>
         <h3 className="text-lg font-medium text-gray-900">
           Password Successfully Changed!
@@ -134,7 +134,11 @@ export function ResetPasswordClient() {
       </div>
 
       {error && (
-        <div className="text-red-500 text-sm bg-red-50 p-3 rounded-md border border-red-200">
+        <div className="text-sm p-3 rounded-md border" style={{ 
+          color: 'var(--color-destructive)', 
+          backgroundColor: 'var(--color-destructive-foreground)', 
+          borderColor: 'var(--color-destructive)' 
+        }}>
           {error}
         </div>
       )}
@@ -158,8 +162,8 @@ export function ResetPasswordClient() {
       </Button>
 
               <div className="text-center">
-          <Link href="/login" className="text-sm text-blue-600 hover:text-blue-500">
-            Back to Login
+          <Link href="/login" className="text-sm" style={{ color: 'var(--color-primary)' }}>
+            Back to login
           </Link>
         </div>
     </form>

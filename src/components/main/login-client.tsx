@@ -17,7 +17,7 @@ export function LoginClient() {
   // Redirect if already authenticated
   useEffect(() => {
     if (user && !loading) {
-      router.push('/dashboard');
+      router.push('/pos');
     }
   }, [user, loading, router]);
 
@@ -41,7 +41,7 @@ export function LoginClient() {
       
       if (session) {
         // Force a page refresh to ensure auth context updates
-        window.location.href = '/dashboard';
+        window.location.href = '/pos';
       } else {
         setError('Login successful but no session created');
         setIsLoading(false);

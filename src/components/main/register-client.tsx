@@ -18,7 +18,7 @@ export function RegisterClient() {
   // Redirect if already authenticated
   useEffect(() => {
     if (user && !loading) {
-      router.push('/dashboard');
+      router.push('/pos');
     }
   }, [user, loading, router]);
 

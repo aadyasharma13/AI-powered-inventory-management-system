@@ -47,7 +47,7 @@ export async function signIn(formData: FormData) {
     return { error: error.message };
   }
 
-  redirect('/dashboard');
+  redirect('/pos');
 }
 
 export async function signOut() {

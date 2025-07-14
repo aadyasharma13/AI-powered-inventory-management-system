@@ -27,7 +27,7 @@ export function Navigation() {
             <ThemeToggle />
             {user ? (
               <>
-                <Link href="/dashboard">
+                <Link href="/pos">
                   <Button variant="default">Dashboard</Button>
                 </Link>
                 <Link href="/profile">

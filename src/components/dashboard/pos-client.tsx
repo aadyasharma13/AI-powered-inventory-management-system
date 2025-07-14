@@ -18,6 +18,11 @@ const initialData: PosFormData = {
   weather: 'Clear',
 };
 
+function getRandomProductName(): string {
+  const products = ['Tomatoes', 'Milk', 'Bread', 'Eggs', 'Chicken', 'Rice', 'Pasta', 'Apples', 'Bananas', 'Oranges', 'Potatoes', 'Carrots', 'Onions', 'Cheese', 'Yogurt'];
+  return products[Math.floor(Math.random() * products.length)];
+}
+
 function getRandomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -45,7 +50,7 @@ export default function PosClient() {
     const now = new Date();
     setForm({
       product_id: `prod-${getRandomInt(1, 10)}`,
-      product_name: `Product ${getRandomInt(1, 10)}`,
+      product_name: getRandomProductName(),
       timestamp: now.toISOString(),
       quantity_sold: getRandomInt(1, 100).toString(),
       stock_level: getRandomInt(0, 500).toString(),
@@ -80,8 +85,8 @@ export default function PosClient() {
       } else {
         setMessage('Failed to upload data.');
       }
-    } catch (err) {
-      setMessage('Error uploading data.');
+    } catch (err: unknown) {
+      setMessage('Error uploading data. ' + (err instanceof Error ? err.message : 'Unknown error'));
     } finally {
       setLoading(false);
     }

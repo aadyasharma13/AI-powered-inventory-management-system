@@ -2,7 +2,7 @@
 
 import { db } from '@/db';
 import { profiles } from '@/db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { supabaseAdmin, supabase } from '@/lib/supabase';
 

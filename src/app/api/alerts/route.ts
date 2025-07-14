@@ -18,7 +18,7 @@ async function sendTwilioSMS(product_id: string, alertType: string) {
   return true;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const all = await db.select().from(dataPoints);
     const now = new Date();

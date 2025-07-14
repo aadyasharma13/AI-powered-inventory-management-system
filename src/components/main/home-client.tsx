@@ -4,18 +4,11 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  ArrowRight, 
-  Zap, 
-  Brain, 
-  TrendingUp, 
-  BarChart3, 
-  Database, 
-  Bell,
-  Loader2,
-  Package
+import {
+  ArrowRight,
+  Zap,
+  Loader2
 } from 'lucide-react';
 
 export function HomeClient() {
@@ -60,22 +53,22 @@ export function HomeClient() {
               <Zap className="h-4 w-4" style={{ color: 'var(--color-primary)' }} />
               <span>AI-Powered Inventory Management</span>
             </Badge>
-            
+
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
               Intelligent Inventory
               <span className="block" style={{ color: 'var(--color-primary)' }}>
                 Management System
               </span>
             </h1>
-            
+
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Leverage artificial intelligence to optimize inventory levels, predict demand, 
+              Leverage artificial intelligence to optimize inventory levels, predict demand,
               and automate supply chain operations across your entire retail network.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 onClick={handleGetStarted}
                 disabled={isLoading}
                 className="text-lg px-8 py-3"
@@ -87,9 +80,9 @@ export function HomeClient() {
                 )}
                 Get Started
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
+              <Button
+                variant="outline"
+                size="lg"
                 onClick={handleLearnMore}
                 className="text-lg px-8 py-3"
               >
@@ -107,12 +100,12 @@ export function HomeClient() {
             Ready to Transform Your Inventory Management?
           </h2>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join thousands of retailers who have already optimized their operations 
+            Join thousands of retailers who have already optimized their operations
             with our AI-powered inventory management system.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               onClick={handleGetStarted}
               disabled={isLoading}
               className="text-lg px-8 py-3"
@@ -124,9 +117,9 @@ export function HomeClient() {
               )}
               Start Free Trial
             </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
+            <Button
+              variant="outline"
+              size="lg"
               onClick={handleLearnMore}
               className="text-lg px-8 py-3"
             >

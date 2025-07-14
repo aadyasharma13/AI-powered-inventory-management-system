@@ -1,188 +1,133 @@
-'use client';
+"use client";
+import React, { useState } from 'react';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ModelType, WeatherType, DemandResult, AlertResult } from '@/lib/types';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Label } from '../ui/label';
 
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import apiCache from '@/lib/api-cache';
-import { DemandForecastData } from '@/lib/types';
-import { TrendingUp, Target, Calendar, BarChart3 } from 'lucide-react';
+export default function DemandForecastClient() {
+  // Demand prediction form
+  const [model, setModel] = useState<ModelType>('Random Forest');
+  const [price, setPrice] = useState('');
+  const [weather, setWeather] = useState<WeatherType>('Clear');
+  const [demandResult, setDemandResult] = useState<DemandResult | null>(null);
+  const [loadingDemand, setLoadingDemand] = useState(false);
 
-export function DemandForecastClient() {
-  const [data, setData] = useState<DemandForecastData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // Inventory alert form
+  const [stock, setStock] = useState('');
+  const [expiry, setExpiry] = useState('');
+  const [alertResult, setAlertResult] = useState<AlertResult | null>(null);
+  const [loadingAlert, setLoadingAlert] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await apiCache.get('/api/forecasting/demand');
-        if (response.error) {
-          throw new Error(response.error);
-        }
-        setData(response.data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Demand Forecast</CardTitle>
-          </CardHeader>
-          <CardContent className="pl-2">
-            <div className="h-[200px] bg-muted animate-pulse rounded" />
-          </CardContent>
-        </Card>
-        <Card className="col-span-3">
-          <CardHeader>
-            <CardTitle>Forecast Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="flex items-center space-x-4">
-                  <div className="h-4 w-4 bg-muted animate-pulse rounded" />
-                  <div className="space-y-2 flex-1">
-                    <div className="h-4 bg-muted animate-pulse rounded w-3/4" />
-                    <div className="h-3 bg-muted animate-pulse rounded w-1/2" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <Card>
-        <CardContent className="pt-6">
-          <div className="text-center text-destructive">
-            <p>Error loading demand forecast: {error}</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (!data) {
-    return (
-      <Card>
-        <CardContent className="pt-6">
-          <div className="text-center text-muted-foreground">
-            <p>No demand forecast data available</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  const getTrendColor = (trend: 'up' | 'down' | 'stable') => {
-    switch (trend) {
-      case 'up':
-        return 'text-green-600';
-      case 'down':
-        return 'text-red-600';
-      default:
-        return 'text-blue-600';
-    }
+  const handleDemand = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoadingDemand(true);
+    setDemandResult(null);
+    const res = await fetch('/api/demand', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'predict', model, price: parseFloat(price), weather }),
+    });
+    const data = await res.json();
+    setDemandResult(data);
+    setLoadingDemand(false);
   };
 
-  const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 80) return 'text-green-600';
-    if (confidence >= 60) return 'text-orange-600';
-    return 'text-red-600';
+  const handleAlert = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoadingAlert(true);
+    setAlertResult(null);
+    const res = await fetch('/api/demand', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'alert', stock: parseInt(stock, 10), expiry }),
+    });
+    const data = await res.json();
+    setAlertResult(data);
+    setLoadingAlert(false);
   };
+
+  // For demo: show a simple chart if demandResult exists
+  const chartData = demandResult
+    ? [
+        { name: 'Today', value: parseFloat(price) },
+        { name: 'Predicted', value: demandResult.predicted },
+      ]
+    : [];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-      <Card className="col-span-4">
-        <CardHeader>
-          <CardTitle>Demand Forecast</CardTitle>
-          <CardDescription>
-            AI-powered demand predictions and trend analysis
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="pl-2">
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center space-x-2">
-                <Target className="h-4 w-4 text-blue-600" />
-                <span className="text-sm font-medium">Predicted Demand</span>
-                <span className="text-sm text-muted-foreground">
-                  {data.predictedDemand?.toLocaleString() ?? '0'}
-                </span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <TrendingUp className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium">Trend Direction</span>
-                <span className={`text-sm font-medium ${getTrendColor(data.trendDirection ?? 'stable')}`}>
-                  {data.trendDirection?.toUpperCase() ?? 'STABLE'}
-                </span>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span>Confidence Level</span>
-                <span className={`font-medium ${getConfidenceColor(data.confidenceLevel ?? 0)}`}>
-                  {data.confidenceLevel ? `${data.confidenceLevel.toFixed(1)}%` : '0%'}
-                </span>
-              </div>
-              <Progress value={data.confidenceLevel ?? 0} className="h-2" />
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span>Seasonal Factor</span>
-                <span className="font-medium text-blue-600">
-                  {data.seasonalFactor ? `${data.seasonalFactor.toFixed(2)}x` : '1.00x'}
-                </span>
-              </div>
-            </div>
+    <div className="max-w-xl mx-auto p-4 space-y-8">
+      <Card className="space-y-4 p-4">
+        <h2 className="text-2xl font-bold mb-2">Demand Forecasting</h2>
+        <form onSubmit={handleDemand} className="space-y-3">
+          <div className="font-semibold">Predict Next Day Demand</div>
+          <div className="space-y-2">
+            <Label htmlFor="model">Model</Label>
+            <Select value={model} onValueChange={v => setModel(v as ModelType)} name="model">
+              <SelectTrigger>
+                <SelectValue placeholder="Model" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Random Forest">Random Forest</SelectItem>
+                <SelectItem value="Previous Day Sales">Previous Day Sales</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        </CardContent>
+          <div className="space-y-2">
+            <Label htmlFor="price">Price</Label>
+            <Input id="price" type="number" step="0.01" value={price} onChange={e => setPrice(e.target.value)} placeholder="Price" required />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="weather">Weather</Label>
+            <Select value={weather} onValueChange={v => setWeather(v as WeatherType)} name="weather">
+              <SelectTrigger>
+                <SelectValue placeholder="Weather" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Clear">Clear</SelectItem>
+                <SelectItem value="Rain">Rain</SelectItem>
+                <SelectItem value="Cloudy">Cloudy</SelectItem>
+                <SelectItem value="Sunny">Sunny</SelectItem>
+                <SelectItem value="Storm">Storm</SelectItem>
+                <SelectItem value="Snow">Snow</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button type="submit" disabled={loadingDemand}>{loadingDemand ? 'Predicting...' : 'Predict'}</Button>
+        </form>
+        {demandResult && (
+          <div className="mt-2">
+            <div className="mb-2">📦 Predicted Demand: <b>{demandResult.predicted}</b> units</div>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </Card>
-      <Card className="col-span-3">
-        <CardHeader>
-          <CardTitle>Forecast Details</CardTitle>
-          <CardDescription>Detailed forecast breakdown</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {data.forecasts?.map((forecast, index) => (
-              <div key={index} className="flex items-center space-x-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                  <Calendar className="h-4 w-4" />
-                </div>
-                <div className="space-y-1 flex-1">
-                  <p className="text-sm font-medium leading-none">{forecast.date}</p>
-                  <p className="text-xs text-muted-foreground">
-                    Demand: {forecast.demand.toLocaleString()} | Confidence: {forecast.confidence.toFixed(1)}%
-                  </p>
-                </div>
-                <Badge variant={forecast.confidence >= 80 ? 'default' : forecast.confidence >= 60 ? 'secondary' : 'destructive'}>
-                  {forecast.confidence.toFixed(0)}%
-                </Badge>
-              </div>
-            )) ?? (
-              <div className="text-center text-muted-foreground py-4">
-                <p>No forecast data available</p>
-              </div>
-            )}
+      <Card className="space-y-4 p-4">
+        <form onSubmit={handleAlert} className="space-y-3">
+          <div className="font-semibold">⚠️ Inventory Alert Checker</div>
+          <div className="space-y-2">
+            <Label htmlFor="stock">Stock Level</Label>
+            <Input id="stock" type="number" value={stock} onChange={e => setStock(e.target.value)} placeholder="Current Stock Level" required />
           </div>
-        </CardContent>
+          <div className="space-y-2">
+            <Label htmlFor="expiry">Expiry Date</Label>
+            <Input id="expiry" type="date" value={expiry} onChange={e => setExpiry(e.target.value)} placeholder="Expiry Date" required />
+          </div>
+          <Button type="submit" disabled={loadingAlert}>{loadingAlert ? 'Checking...' : 'Check Alert'}</Button>
+        </form>
+        {alertResult && <div className="mt-2">{alertResult.alert}</div>}
       </Card>
     </div>
   );
-} 
+}

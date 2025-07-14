@@ -1,5 +1,5 @@
-import { AlertsClient } from '@/components/dashboard/alerts-client';
+import AlertsClient from '@/components/dashboard/alerts-client';
 
 export default function AlertsPage() {
   return <AlertsClient />;
-} 
+}

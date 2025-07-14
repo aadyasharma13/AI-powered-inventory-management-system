@@ -7,22 +7,15 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { 
-  Menu, 
-  LayoutDashboard, 
-  Bell, 
-  BarChart3, 
-  TrendingUp, 
-  Truck, 
+import {
+  Menu,
+  LayoutDashboard,
+  Bell,
+  BarChart3,
+  TrendingUp,
   Settings,
   Users,
-  Package,
-  Activity,
-  Target,
   Zap,
-  CloudRain,
-  ShoppingCart,
-  Calendar,
   ChevronDown,
   ChevronRight
 } from 'lucide-react';
@@ -40,64 +33,25 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
   {
-    title: 'Dashboard',
-    href: '/dashboard',
+    title: 'Data Collection',
+    href: '/pos',
     icon: LayoutDashboard,
   },
   {
     title: 'Alerts',
     href: '/alerts',
     icon: Bell,
-    badge: '3',
+    badge: '●',
   },
   {
     title: 'Analytics',
-    href: '/',
+    href: '/analytics',
     icon: BarChart3,
-    children: [
-      {
-        title: 'Sales Analytics',
-        href: '/sales',
-        icon: ShoppingCart,
-      },
-      {
-        title: 'Inventory Analytics',
-        href: '/inventory',
-        icon: Package,
-      },
-      {
-        title: 'Performance Metrics',
-        href: '/performance',
-        icon: Target,
-      },
-    ],
   },
   {
-    title: 'Forecasting',
-    href: '/',
+    title: 'Demand Forecasting',
+    href: '/demand',
     icon: TrendingUp,
-    children: [
-      {
-        title: 'Demand Forecast',
-        href: '/demand',
-        icon: Activity,
-      },
-      {
-        title: 'Weather Impact',
-        href: '/weather',
-        icon: CloudRain,
-      },
-      {
-        title: 'Seasonal Trends',
-        href: '/seasonal',
-        icon: Calendar,
-      },
-    ],
-  },
-  {
-    title: 'Suppliers',
-    href: '/suppliers',
-    icon: Truck,
   },
   {
     title: 'Settings',
@@ -118,7 +72,7 @@ export function Sidebar({ className }: SidebarProps) {
   // Auto-expand parent menu items when child route is active
   useEffect(() => {
     const newExpandedItems: string[] = [];
-    
+
     sidebarItems.forEach(item => {
       if (item.children) {
         const hasActiveChild = item.children.some(child => pathname === child.href);
@@ -134,7 +88,7 @@ export function Sidebar({ className }: SidebarProps) {
   }, [pathname, expandedItems, setExpandedItems]);
 
   const isActive = (href: string) => pathname === href;
-  const isChildActive = (children: SidebarItem[]) => 
+  const isChildActive = (children: SidebarItem[]) =>
     children.some(child => pathname === child.href);
 
   const renderSidebarItem = (item: SidebarItem, level = 0) => {
@@ -184,7 +138,7 @@ export function Sidebar({ className }: SidebarProps) {
             </Link>
           )}
         </div>
-        
+
         {item.children && isExpanded && (
           <div className="mt-1">
             {item.children.map(child => renderSidebarItem(child, level + 1))}
@@ -204,16 +158,16 @@ export function Sidebar({ className }: SidebarProps) {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <Zap className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold">Team ASAP</span>
+              <span className="text-xl font-bold">ASAP Store</span>
             </Link>
           </div>
-          
+
           <ScrollArea className="flex-1 px-3">
             <nav className="space-y-1">
               {sidebarItems.map(item => renderSidebarItem(item))}
             </nav>
           </ScrollArea>
-          
+
           <div className="flex-shrink-0 p-4 border-t">
             <div className="flex items-center space-x-3 mb-3">
               <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
@@ -261,16 +215,16 @@ export function Sidebar({ className }: SidebarProps) {
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                   <Zap className="w-5 h-5 text-primary-foreground" />
                 </div>
-                <span className="text-xl font-bold">Team ASAP</span>
+                <span className="text-xl font-bold">ASAP Store</span>
               </Link>
             </div>
-            
+
             <ScrollArea className="flex-1 px-3 py-4">
               <nav className="space-y-1">
                 {sidebarItems.map(item => renderSidebarItem(item))}
               </nav>
             </ScrollArea>
-            
+
             <div className="flex-shrink-0 p-4 border-t">
               <div className="flex items-center space-x-3 mb-3">
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">

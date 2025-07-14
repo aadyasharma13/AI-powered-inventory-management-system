@@ -5,7 +5,14 @@ import { profiles } from '@/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { supabaseAdmin, supabase } from '@/lib/supabase';
-import { Profile } from './types';
+
+export interface Profile {
+  id: string;
+  name: string;
+  avatar_url?: string;
+  created_at: Date;
+  updated_at: Date;
+}
 
 
 // Profile actions
